@@ -8,27 +8,35 @@ class HotkeyService:
         self.listener = None
 
     def _on_press(self, key):
-        #print(key)
+        print(key)
+        # ----------------------------
+        # LETTER KEYS
+        # ----------------------------
         try:
-            k = key.char.lower()
-        except:
-            k = str(key).replace("Key.", "")
+            if key.char:
+                k = key.char.lower()
 
-        match k:
-            case "p":
-                self.auto.start()
+                match k:
+                    case "p":
+                        self.auto.start()
 
-            case "m":
-                self.auto.stop()
+                    case "m":
+                        self.auto.stop()
 
-            case "f3":
-                self.auto.set_click1()
+        except AttributeError:
+            # ----------------------------
+            # FUNCTION KEYS
+            # ----------------------------
+            match key:
 
-            case "f4":
-                self.auto.set_click2()
+                case keyboard.Key.f3:
+                    self.auto.set_click1()
 
-            case "f5":
-                self.auto.start_area_select()
+                case keyboard.Key.f4:
+                    self.auto.set_click2()
+
+                case keyboard.Key.f5:
+                    self.auto.start_area_select()
 
     def start(self):
         self.listener = keyboard.Listener(on_press=self._on_press)

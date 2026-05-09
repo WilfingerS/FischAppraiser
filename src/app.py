@@ -16,8 +16,10 @@ from view.automation_view import AutomationView
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("Fisch Appraiser")
-    root.geometry("1000x600")
-
+    root.geometry("700x600")
+    root.attributes("-topmost",True)
+    root.attributes("-alpha",.75)
+    
     app_service = AppService()
 
     # ----------------------------
@@ -26,7 +28,6 @@ if __name__ == "__main__":
 
     main = tk.Frame(root)
     main.pack(fill="both", expand=True)
-
     left = tk.Frame(main)
     left.pack(side="left", fill="both", expand=True)
 

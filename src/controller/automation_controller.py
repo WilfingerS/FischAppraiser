@@ -1,10 +1,10 @@
 import threading
 import time
 import random
-import pyautogui
 import mss
 import numpy as np
-
+import pydirectinput
+import pyautogui
 
 class AutomationController:
     def __init__(self, model, view):
@@ -18,13 +18,15 @@ class AutomationController:
     def start(self):
         if self.model.running:
             return
+        
+        print("Started?")
 
         if not self.model.click1 or not self.model.click2:
             return
-
+        print("Clicker are there")
         if not self.model.area:
             return
-
+        print("area is there")
         if not self.model.selected:
             return
 
@@ -32,6 +34,7 @@ class AutomationController:
         threading.Thread(target=self.loop, daemon=True).start()
 
     def stop(self):
+        print("Stopped?")
         self.model.running = False
 
     # ----------------------------
@@ -42,33 +45,26 @@ class AutomationController:
         while self.model.running:
 
             self._click(self.model.click1)
-            time.sleep(self.model.delay_first)
+            time.sleep(self.model.delay_first/1000)
 
             self._click(self.model.click2)
-            time.sleep(self.model.delay_second)
+            time.sleep(self.model.delay_second/1000)
 
             self._scan_area()
 
-            time.sleep(self.model.delay_third)
+            time.sleep(self.model.delay_third/1000)
 
     # ----------------------------
     # CLICKING
     # ----------------------------
-
     def _click(self, pos):
-        print(f"clicked at {pos}")
         if not pos:
             return
-
-        x, y = pos
-        r = self.model.roam_radius
-
-        x += random.randint(-r, r)
-        y += random.randint(-r, r)
-
-        pyautogui.moveTo(x, y, duration=0)
-        time.sleep(self.model.move_pause)
-        pyautogui.click()
+        x, y = int(pos.x), int(pos.y)
+        pydirectinput.moveTo(x, y)
+        time.sleep(0.1)
+        pydirectinput.click()
+        print("clicked")
 
     # ----------------------------
     # SCANNING (CORE LOGIC)
@@ -102,7 +98,7 @@ class AutomationController:
             tol = self.model.tolerance
 
             for name, (rt, gt, bt) in targets:
-
+            
                 mask = (
                     (abs(r - rt) <= tol) &
                     (abs(g - gt) <= tol) &
